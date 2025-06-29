@@ -1,8 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, BarChart3, User, Settings, Save, TrendingUp, Heart, Brain, Activity, UserPlus, ExternalLink } from 'lucide-react';
 
-// Google Forms URL
-const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSc--rnOJ1j5a8I639SBAkpbvvLs0JvI0q5qvWVos8IGR-p8qg/viewform';
+// Google Forms情報
+const GOOGLE_FORM_BASE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSc--rnOJ1j5a8I639SBAkpbvvLs0JvI0q5qvWVos8IGR-p8qg/viewform';
+const FORM_ENTRIES = {
+  email: 'entry.451790145',
+  name: 'entry.231879835', 
+  dataType: 'entry.495730600',
+  jsonData: 'entry.1934964524',
+  timestamp: 'entry.526455913'
+};
 
 // ユーザー情報管理
 const getUserInfo = () => {
@@ -12,6 +19,39 @@ const getUserInfo = () => {
 
 const saveUserInfo = (userInfo) => {
   localStorage.setItem('userInfo', JSON.stringify(userInfo));
+};
+
+// Google Forms自動入力URL生成
+const generateGoogleFormURL = (data) => {
+  const userInfo = getUserInfo();
+  const params = new URLSearchParams();
+  
+  // 各フィールドを事前入力
+  params.append(FORM_ENTRIES.email, userInfo.email);
+  params.append(FORM_ENTRIES.name, userInfo.name);
+  params.append(FORM_ENTRIES.dataType, data.type === 'assessment_complete' ? '偽物感アセスメント完了' : 'デイリートラッキング記録');
+  params.append(FORM_ENTRIES.timestamp, new Date().toLocaleString('ja-JP'));
+  
+  // 送信データを整形
+  const formattedData = data.type === 'assessment_complete' 
+    ? `アセスメント結果
+騎手スコア: ${data.scores.soul}/25
+馬の意思スコア: ${data.scores.mind}/25  
+馬体スコア: ${data.scores.body}/25
+総合スコア: ${data.totalScore}/75
+
+詳細データ:
+${JSON.stringify(data.responses, null, 2)}`
+    : `デイリートラッキング
+偽物感度: ${data.data.fakenessDegree}/10
+トリガー: ${data.data.mainTrigger}
+身体反応: ${data.data.bodyReaction}
+対処法: ${data.data.copingMethod}
+学び: ${data.data.learningForTomorrow}`;
+
+  params.append(FORM_ENTRIES.jsonData, formattedData);
+  
+  return `${GOOGLE_FORM_BASE_URL}?${params.toString()}`;
 };
 
 // データ送信関数
@@ -27,28 +67,8 @@ const sendDataToUTAGE = async (data) => {
     // 開発段階：コンソールでデータ確認
     console.log('📊 送信データ:', payload);
     
-    // 簡潔なデータ形式を作成
-    const simpleData = data.type === 'assessment_complete' 
-      ? `アセスメント結果
-騎手スコア: ${payload.scores.soul}/25
-馬の意思スコア: ${payload.scores.mind}/25  
-馬体スコア: ${payload.scores.body}/25
-総合スコア: ${payload.totalScore}/75`
-      : `デイリートラッキング
-偽物感度: ${data.data.fakenessDegree}/10
-トリガー: ${data.data.mainTrigger}
-身体反応: ${data.data.bodyReaction}
-対処法: ${data.data.copingMethod}
-学び: ${data.data.learningForTomorrow}`;
-
-    // クリップボードにコピーを試行
-    let copySuccess = false;
-    try {
-      await navigator.clipboard.writeText(simpleData);
-      copySuccess = true;
-    } catch (err) {
-      console.log('クリップボードコピー失敗:', err);
-    }
+    // Google Forms自動入力URLを生成
+    const autoFillURL = generateGoogleFormURL(data);
     
     // データ送信完了モーダルを表示
     const modal = document.createElement('div');
@@ -59,37 +79,33 @@ const sendDataToUTAGE = async (data) => {
     `;
     
     modal.innerHTML = `
-      <div style="background: white; padding: 20px; border-radius: 12px; max-width: 500px; width: 100%; max-height: 80%; overflow-y: auto;">
-        <h3 style="margin: 0 0 15px 0; color: #4f46e5; text-align: center;">
-          📊 データ送信準備完了！
-        </h3>
-        
-        ${copySuccess ? 
-          `<div style="background: #dcfce7; border: 1px solid #16a34a; padding: 10px; border-radius: 8px; margin-bottom: 15px; text-align: center;">
-            <strong style="color: #15803d;">✅ クリップボードにコピー済み</strong>
-          </div>` : ''
-        }
-        
-        <div style="background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-          <h4 style="margin: 0 0 10px 0; color: #1e293b;">📋 送信データ:</h4>
-          <textarea 
-            style="width: 100%; height: 120px; border: 2px solid #e5e7eb; border-radius: 8px; padding: 10px; font-family: monospace; font-size: 12px; resize: none;"
-            readonly
-          >${simpleData}</textarea>
-          ${!copySuccess ? 
-            `<button onclick="
-              this.closest('div').querySelector('textarea').select();
-              document.execCommand('copy');
-              alert('コピーしました！');
-            " style="background: #4f46e5; color: white; padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; margin-top: 8px;">
-              手動コピー
-            </button>` : ''
-          }
+      <div style="background: white; padding: 25px; border-radius: 16px; max-width: 450px; width: 100%; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.1);">
+        <div style="margin-bottom: 20px;">
+          <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #4f46e5, #7c3aed); border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; font-size: 24px;">
+            ✅
+          </div>
+          <h3 style="margin: 0 0 10px 0; color: #1e293b; font-size: 20px; font-weight: bold;">
+            データ送信準備完了！
+          </h3>
+          <p style="margin: 0; color: #64748b; font-size: 14px;">
+            Google Formsが自動入力された状態で開きます
+          </p>
         </div>
         
-        <div style="text-align: center; margin-bottom: 15px;">
-          <a href="${GOOGLE_FORM_URL}" target="_blank" 
-             style="display: inline-flex; align-items: center; gap: 8px; background: #059669; color: white; padding: 12px 20px; text-decoration: none; border-radius: 8px; font-weight: bold;">
+        <div style="background: #f1f5f9; padding: 15px; border-radius: 12px; margin-bottom: 20px; text-align: left;">
+          <h4 style="margin: 0 0 10px 0; color: #334155; font-size: 14px; font-weight: bold;">📝 自動入力される情報:</h4>
+          <ul style="margin: 0; padding-left: 20px; color: #475569; font-size: 13px; line-height: 1.6;">
+            <li><strong>メールアドレス:</strong> ${userInfo.email}</li>
+            <li><strong>名前:</strong> ${userInfo.name}</li>
+            <li><strong>データタイプ:</strong> ${data.type === 'assessment_complete' ? '偽物感アセスメント完了' : 'デイリートラッキング記録'}</li>
+            <li><strong>記録日時:</strong> ${new Date().toLocaleString('ja-JP')}</li>
+            <li><strong>送信データ:</strong> 自動入力済み</li>
+          </ul>
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+          <a href="${autoFillURL}" target="_blank" 
+             style="display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #059669, #0d9488); color: white; padding: 12px 24px; text-decoration: none; border-radius: 10px; font-weight: bold; font-size: 16px; transition: transform 0.2s; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);">
             📝 Google Formsを開く
             <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
               <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"/>
@@ -98,23 +114,16 @@ const sendDataToUTAGE = async (data) => {
           </a>
         </div>
         
-        <div style="background: #fef3c7; border: 1px solid #f59e0b; padding: 12px; border-radius: 8px; margin-bottom: 15px;">
-          <h5 style="margin: 0 0 8px 0; color: #92400e;">📝 フォーム入力手順:</h5>
-          <ol style="margin: 0; padding-left: 20px; color: #92400e; font-size: 14px;">
-            <li>メールアドレス: <strong>${userInfo.email}</strong></li>
-            <li>名前: <strong>${userInfo.name}</strong></li>
-            <li>データタイプ: <strong>${data.type === 'assessment_complete' ? '偽物感アセスメント完了' : 'デイリートラッキング記録'}</strong></li>
-            <li>送信データ: 上記コピーしたデータを貼り付け</li>
-            <li>記録日時: <strong>${new Date().toLocaleString('ja-JP')}</strong></li>
-          </ol>
+        <div style="background: linear-gradient(135deg, #fef3c7, #fed7aa); border: 1px solid #f59e0b; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+          <p style="margin: 0; color: #92400e; font-size: 13px; font-weight: 500;">
+            💡 <strong>注意:</strong> フォームが開いたら内容を確認して「送信」ボタンを押してください。全ての項目が自動入力されています。
+          </p>
         </div>
         
-        <div style="text-align: center;">
-          <button onclick="this.closest('[style*=fixed]').remove()" 
-            style="background: #6b7280; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">
-            閉じる
-          </button>
-        </div>
+        <button onclick="this.closest('[style*=fixed]').remove()" 
+          style="background: #6b7280; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">
+          閉じる
+        </button>
       </div>
     `;
     
