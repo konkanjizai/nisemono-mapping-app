@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, BarChart3, User, Settings, Save, TrendingUp, Heart, Brain, Activity } from 'lucide-react';
+import { Calendar, BarChart3, User, Settings, Save, TrendingUp, Heart, Brain, Activity, UserPlus } from 'lucide-react';
 
-// UTAGEユーザー情報取得
+// Google Forms URL
+const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSc--rnOJ1j5a8I639SBAkpbvvLs0JvI0q5qvWVos8IGR-p8qg/viewform';
+
+// ユーザー情報管理
 const getUserInfo = () => {
-  // URLパラメータからユーザー情報を取得
-  const urlParams = new URLSearchParams(window.location.search);
-  return {
-    userId: urlParams.get('user_id') || 'anonymous',
-    email: urlParams.get('email') || '',
-    name: urlParams.get('name') || ''
-  };
+  const saved = localStorage.getItem('userInfo');
+  return saved ? JSON.parse(saved) : null;
+};
+
+const saveUserInfo = (userInfo) => {
+  localStorage.setItem('userInfo', JSON.stringify(userInfo));
 };
 
 // データ送信関数
@@ -25,14 +27,35 @@ const sendDataToUTAGE = async (data) => {
     // 開発段階：コンソールでデータ確認
     console.log('📊 送信データ:', payload);
     
-    // 将来的にはwebhook URLに送信予定
-    // await fetch('YOUR_WEBHOOK_URL', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(payload)
-    // });
+    // Google Formsに送信するデータを準備
+    const formData = {
+      email: userInfo.email,
+      name: userInfo.name,
+      dataType: data.type === 'assessment_complete' ? '偽物感アセスメント完了' : 'デイリートラッキング記録',
+      jsonData: JSON.stringify(payload, null, 2),
+      timestamp: new Date().toLocaleString('ja-JP')
+    };
     
-    alert('データが記録されました！（開発モード）');
+    // クリップボードにコピー
+    const clipboardText = `メールアドレス: ${formData.email}
+名前: ${formData.name}
+データタイプ: ${formData.dataType}
+記録日時: ${formData.timestamp}
+
+送信データ:
+${formData.jsonData}`;
+    
+    try {
+      await navigator.clipboard.writeText(clipboardText);
+      alert('📋 データがクリップボードにコピーされました！\n\n次に開くGoogle Formsに貼り付けてください。');
+    } catch (err) {
+      console.log('クリップボードコピー失敗:', err);
+      alert('✅ データが記録されました！\n\n手動でGoogle Formsに入力してください。');
+    }
+    
+    // Google Formsを新しいタブで開く
+    window.open(GOOGLE_FORM_URL, '_blank');
+    
     return true;
   } catch (error) {
     console.error('❌ データ送信エラー:', error);
@@ -43,6 +66,8 @@ const sendDataToUTAGE = async (data) => {
 const NisemonoMappingApp = () => {
   const [currentView, setCurrentView] = useState('dashboard');
   const [currentSection, setCurrentSection] = useState('soul');
+  const [userInfo, setUserInfo] = useState(null);
+  const [showUserSetup, setShowUserSetup] = useState(false);
   const [userData, setUserData] = useState({
     assessments: {
       soul: [], // 騎手レベル
@@ -58,6 +83,16 @@ const NisemonoMappingApp = () => {
     mind: {},
     body: {}
   });
+
+  // 初期化時にユーザー情報をチェック
+  useEffect(() => {
+    const savedUserInfo = getUserInfo();
+    if (savedUserInfo) {
+      setUserInfo(savedUserInfo);
+    } else {
+      setShowUserSetup(true);
+    }
+  }, []);
 
   // 偽物感チェックリスト項目
   const soulQuestions = [
@@ -149,6 +184,88 @@ const NisemonoMappingApp = () => {
     }
   };
 
+  // ユーザー情報設定コンポーネント
+  const UserSetup = () => {
+    const [formData, setFormData] = useState({
+      name: '',
+      email: ''
+    });
+
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      if (formData.name && formData.email) {
+        const userInfo = {
+          name: formData.name,
+          email: formData.email,
+          setupDate: new Date().toISOString()
+        };
+        saveUserInfo(userInfo);
+        setUserInfo(userInfo);
+        setShowUserSetup(false);
+      } else {
+        alert('名前とメールアドレスを両方入力してください。');
+      }
+    };
+
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center p-4">
+        <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8">
+          <div className="text-center mb-8">
+            <UserPlus className="h-16 w-16 text-indigo-600 mx-auto mb-4" />
+            <h1 className="text-2xl font-bold text-indigo-900 mb-2">ユーザー情報の設定</h1>
+            <p className="text-gray-600">最初に一度だけ設定してください</p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label className="block text-gray-700 font-semibold mb-2">
+                お名前 *
+              </label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) => setFormData(prev => ({...prev, name: e.target.value}))}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                placeholder="山田太郎"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-gray-700 font-semibold mb-2">
+                メールアドレス *
+              </label>
+              <input
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData(prev => ({...prev, email: e.target.value}))}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                placeholder="example@email.com"
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors"
+            >
+              設定完了
+            </button>
+          </form>
+
+          <p className="text-xs text-gray-500 mt-4 text-center">
+            ※この情報は端末に保存され、データ送信時の識別に使用されます
+          </p>
+        </div>
+      </div>
+    );
+  };
+
+  // ユーザー情報設定画面を表示
+  if (showUserSetup) {
+    return <UserSetup />;
+  }
+
   // ダッシュボードコンポーネント
   const Dashboard = () => {
     const totalScore = getTotalScore();
@@ -159,6 +276,9 @@ const NisemonoMappingApp = () => {
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-indigo-900 mb-2">偽物感マッピング</h1>
           <p className="text-indigo-600">真の自分を取り戻す旅路</p>
+          {userInfo && (
+            <p className="text-sm text-gray-500 mt-2">ようこそ、{userInfo.name}さん</p>
+          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -479,6 +599,22 @@ const NisemonoMappingApp = () => {
               </div>
             ))}
           </div>
+        </div>
+
+        <div className="bg-white p-6 rounded-xl border border-gray-200">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">ユーザー情報変更</h3>
+          <button 
+            onClick={() => {
+              if (confirm('ユーザー情報を変更しますか？\n※保存されたデータは削除されません')) {
+                localStorage.removeItem('userInfo');
+                setUserInfo(null);
+                setShowUserSetup(true);
+              }
+            }}
+            className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700"
+          >
+            ユーザー情報を変更
+          </button>
         </div>
 
         <div className="bg-white p-6 rounded-xl border border-gray-200">
