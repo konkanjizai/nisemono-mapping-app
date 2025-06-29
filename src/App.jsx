@@ -36,25 +36,73 @@ const sendDataToUTAGE = async (data) => {
       timestamp: new Date().toLocaleString('ja-JP')
     };
     
-    // クリップボードにコピー
-    const clipboardText = `メールアドレス: ${formData.email}
-名前: ${formData.name}
-データタイプ: ${formData.dataType}
-記録日時: ${formData.timestamp}
+    // 簡潔なデータ形式を作成
+    const simpleData = data.type === 'assessment_complete' 
+      ? `アセスメント結果
+騎手スコア: ${payload.scores.soul}/25
+馬の意思スコア: ${payload.scores.mind}/25  
+馬体スコア: ${payload.scores.body}/25
+総合スコア: ${payload.totalScore}/75`
+      : `デイリートラッキング
+偽物感度: ${data.data.fakenessDegree}/10
+トリガー: ${data.data.mainTrigger}
+身体反応: ${data.data.bodyReaction}
+対処法: ${data.data.copingMethod}
+学び: ${data.data.learningForTomorrow}`;
 
-送信データ:
-${formData.jsonData}`;
-    
+    // クリップボードにコピーを試行
+    let copySuccess = false;
     try {
-      await navigator.clipboard.writeText(clipboardText);
-      alert('📋 データがクリップボードにコピーされました！\n\n次に開くGoogle Formsに貼り付けてください。');
+      await navigator.clipboard.writeText(simpleData);
+      copySuccess = true;
     } catch (err) {
       console.log('クリップボードコピー失敗:', err);
-      alert('✅ データが記録されました！\n\n手動でGoogle Formsに入力してください。');
     }
     
-    // Google Formsを新しいタブで開く
-    window.open(GOOGLE_FORM_URL, '_blank');
+    if (copySuccess) {
+      alert('📋 データがクリップボードにコピーされました！\n\nGoogle Formsの「送信データ」欄に貼り付けてください。');
+    } else {
+      // フォールバック：モーダルでテキストを表示
+      const modal = document.createElement('div');
+      modal.style.cssText = `
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+        background: rgba(0,0,0,0.5); z-index: 10000; display: flex; 
+        align-items: center; justify-content: center; padding: 20px;
+      `;
+      
+      modal.innerHTML = `
+        <div style="background: white; padding: 20px; border-radius: 12px; max-width: 500px; width: 100%;">
+          <h3 style="margin: 0 0 15px 0; color: #4f46e5;">📋 データをコピーしてください</h3>
+          <textarea 
+            style="width: 100%; height: 200px; border: 2px solid #e5e7eb; border-radius: 8px; padding: 10px; font-family: monospace; font-size: 12px;"
+            readonly
+          >${simpleData}</textarea>
+          <div style="margin-top: 15px; display: flex; gap: 10px;">
+            <button onclick="
+              this.closest('div').querySelector('textarea').select();
+              document.execCommand('copy');
+              alert('コピーしました！');
+            " style="background: #4f46e5; color: white; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer;">
+              手動コピー
+            </button>
+            <button onclick="this.closest('[style*=fixed]').remove()" 
+              style="background: #6b7280; color: white; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer;">
+              閉じる
+            </button>
+          </div>
+          <p style="margin: 10px 0 0 0; font-size: 12px; color: #6b7280;">
+            上記テキストをGoogle Formsの「送信データ」欄に貼り付けてください
+          </p>
+        </div>
+      `;
+      
+      document.body.appendChild(modal);
+    }
+    
+    // Google Formsを新しいタブで開く（少し遅延させる）
+    setTimeout(() => {
+      window.open(GOOGLE_FORM_URL, '_blank');
+    }, 1000);
     
     return true;
   } catch (error) {
