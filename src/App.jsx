@@ -1,6 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, BarChart3, User, Settings, Save, TrendingUp, Heart, Brain, Activity } from 'lucide-react';
 
+// UTAGEユーザー情報取得
+const getUserInfo = () => {
+  // URLパラメータからユーザー情報を取得
+  const urlParams = new URLSearchParams(window.location.search);
+  return {
+    userId: urlParams.get('user_id') || 'anonymous',
+    email: urlParams.get('email') || '',
+    name: urlParams.get('name') || ''
+  };
+};
+
+// データ送信関数
+const sendDataToUTAGE = async (data) => {
+  try {
+    const userInfo = getUserInfo();
+    const payload = {
+      ...data,
+      user: userInfo,
+      timestamp: new Date().toISOString()
+    };
+    
+    // 開発段階：コンソールでデータ確認
+    console.log('📊 送信データ:', payload);
+    
+    // 将来的にはwebhook URLに送信予定
+    // await fetch('YOUR_WEBHOOK_URL', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify(payload)
+    // });
+    
+    alert('データが記録されました！（開発モード）');
+    return true;
+  } catch (error) {
+    console.error('❌ データ送信エラー:', error);
+    return false;
+  }
+};
+
 const NisemonoMappingApp = () => {
   const [currentView, setCurrentView] = useState('dashboard');
   const [currentSection, setCurrentSection] = useState('soul');
@@ -82,7 +121,21 @@ const NisemonoMappingApp = () => {
       setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
     }
     else {
-      // 結果保存
+      // 結果保存時にデータ送信
+      const assessmentData = {
+        type: 'assessment_complete',
+        scores: {
+          soul: calculateScore(currentAssessment.soul),
+          mind: calculateScore(currentAssessment.mind),
+          body: calculateScore(currentAssessment.body)
+        },
+        totalScore: getTotalScore(),
+        responses: currentAssessment
+      };
+      
+      // データ送信
+      sendDataToUTAGE(assessmentData);
+      
       setUserData(prev => ({
         ...prev,
         assessments: {
@@ -276,6 +329,15 @@ const NisemonoMappingApp = () => {
     });
 
     const handleSubmit = () => {
+      // デイリーデータ送信
+      const dailyTrackingData = {
+        type: 'daily_tracking',
+        data: dailyData
+      };
+      
+      // データ送信
+      sendDataToUTAGE(dailyTrackingData);
+      
       addDailyEntry(dailyData);
       setCurrentView('dashboard');
     };
