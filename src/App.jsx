@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, BarChart3, User, Settings, Save, TrendingUp, Heart, Brain, Activity, UserPlus } from 'lucide-react';
+import { Calendar, BarChart3, User, Settings, Save, TrendingUp, Heart, Brain, Activity, UserPlus, ExternalLink } from 'lucide-react';
 
 // Google Forms URL
 const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSc--rnOJ1j5a8I639SBAkpbvvLs0JvI0q5qvWVos8IGR-p8qg/viewform';
@@ -27,15 +27,6 @@ const sendDataToUTAGE = async (data) => {
     // 開発段階：コンソールでデータ確認
     console.log('📊 送信データ:', payload);
     
-    // Google Formsに送信するデータを準備
-    const formData = {
-      email: userInfo.email,
-      name: userInfo.name,
-      dataType: data.type === 'assessment_complete' ? '偽物感アセスメント完了' : 'デイリートラッキング記録',
-      jsonData: JSON.stringify(payload, null, 2),
-      timestamp: new Date().toLocaleString('ja-JP')
-    };
-    
     // 簡潔なデータ形式を作成
     const simpleData = data.type === 'assessment_complete' 
       ? `アセスメント結果
@@ -59,50 +50,75 @@ const sendDataToUTAGE = async (data) => {
       console.log('クリップボードコピー失敗:', err);
     }
     
-    if (copySuccess) {
-      alert('📋 データがクリップボードにコピーされました！\n\nGoogle Formsの「送信データ」欄に貼り付けてください。');
-    } else {
-      // フォールバック：モーダルでテキストを表示
-      const modal = document.createElement('div');
-      modal.style.cssText = `
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-        background: rgba(0,0,0,0.5); z-index: 10000; display: flex; 
-        align-items: center; justify-content: center; padding: 20px;
-      `;
-      
-      modal.innerHTML = `
-        <div style="background: white; padding: 20px; border-radius: 12px; max-width: 500px; width: 100%;">
-          <h3 style="margin: 0 0 15px 0; color: #4f46e5;">📋 データをコピーしてください</h3>
+    // データ送信完了モーダルを表示
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+      background: rgba(0,0,0,0.5); z-index: 10000; display: flex; 
+      align-items: center; justify-content: center; padding: 20px;
+    `;
+    
+    modal.innerHTML = `
+      <div style="background: white; padding: 20px; border-radius: 12px; max-width: 500px; width: 100%; max-height: 80%; overflow-y: auto;">
+        <h3 style="margin: 0 0 15px 0; color: #4f46e5; text-align: center;">
+          📊 データ送信準備完了！
+        </h3>
+        
+        ${copySuccess ? 
+          `<div style="background: #dcfce7; border: 1px solid #16a34a; padding: 10px; border-radius: 8px; margin-bottom: 15px; text-align: center;">
+            <strong style="color: #15803d;">✅ クリップボードにコピー済み</strong>
+          </div>` : ''
+        }
+        
+        <div style="background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+          <h4 style="margin: 0 0 10px 0; color: #1e293b;">📋 送信データ:</h4>
           <textarea 
-            style="width: 100%; height: 200px; border: 2px solid #e5e7eb; border-radius: 8px; padding: 10px; font-family: monospace; font-size: 12px;"
+            style="width: 100%; height: 120px; border: 2px solid #e5e7eb; border-radius: 8px; padding: 10px; font-family: monospace; font-size: 12px; resize: none;"
             readonly
           >${simpleData}</textarea>
-          <div style="margin-top: 15px; display: flex; gap: 10px;">
-            <button onclick="
+          ${!copySuccess ? 
+            `<button onclick="
               this.closest('div').querySelector('textarea').select();
               document.execCommand('copy');
               alert('コピーしました！');
-            " style="background: #4f46e5; color: white; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer;">
+            " style="background: #4f46e5; color: white; padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; margin-top: 8px;">
               手動コピー
-            </button>
-            <button onclick="this.closest('[style*=fixed]').remove()" 
-              style="background: #6b7280; color: white; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer;">
-              閉じる
-            </button>
-          </div>
-          <p style="margin: 10px 0 0 0; font-size: 12px; color: #6b7280;">
-            上記テキストをGoogle Formsの「送信データ」欄に貼り付けてください
-          </p>
+            </button>` : ''
+          }
         </div>
-      `;
-      
-      document.body.appendChild(modal);
-    }
+        
+        <div style="text-align: center; margin-bottom: 15px;">
+          <a href="${GOOGLE_FORM_URL}" target="_blank" 
+             style="display: inline-flex; align-items: center; gap: 8px; background: #059669; color: white; padding: 12px 20px; text-decoration: none; border-radius: 8px; font-weight: bold;">
+            📝 Google Formsを開く
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"/>
+              <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z"/>
+            </svg>
+          </a>
+        </div>
+        
+        <div style="background: #fef3c7; border: 1px solid #f59e0b; padding: 12px; border-radius: 8px; margin-bottom: 15px;">
+          <h5 style="margin: 0 0 8px 0; color: #92400e;">📝 フォーム入力手順:</h5>
+          <ol style="margin: 0; padding-left: 20px; color: #92400e; font-size: 14px;">
+            <li>メールアドレス: <strong>${userInfo.email}</strong></li>
+            <li>名前: <strong>${userInfo.name}</strong></li>
+            <li>データタイプ: <strong>${data.type === 'assessment_complete' ? '偽物感アセスメント完了' : 'デイリートラッキング記録'}</strong></li>
+            <li>送信データ: 上記コピーしたデータを貼り付け</li>
+            <li>記録日時: <strong>${new Date().toLocaleString('ja-JP')}</strong></li>
+          </ol>
+        </div>
+        
+        <div style="text-align: center;">
+          <button onclick="this.closest('[style*=fixed]').remove()" 
+            style="background: #6b7280; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">
+            閉じる
+          </button>
+        </div>
+      </div>
+    `;
     
-    // Google Formsを新しいタブで開く（少し遅延させる）
-    setTimeout(() => {
-      window.open(GOOGLE_FORM_URL, '_blank');
-    }, 1000);
+    document.body.appendChild(modal);
     
     return true;
   } catch (error) {
