@@ -416,40 +416,7 @@ const TrinityAssessmentComplete = () => {
               </div>
             </div>
 
-            {/* 推奨アクション */}
-            <div className="bg-gradient-to-r from-indigo-100 to-purple-100 p-6 rounded-2xl mb-8">
-              <h3 className="text-xl font-bold text-gray-800 mb-4">🎯 推奨される次のステップ</h3>
-              {analysis.scores.total >= 225 && (
-                <div className="mb-4 p-4 bg-red-50 border-l-4 border-red-500 rounded">
-                  <p className="text-red-800 font-semibold">⚠️ 魂感自在道〜ジシン覚醒編〜での集中的サポートを強く推奨</p>
-                  <p className="text-red-700 text-sm mt-1">包括的な三位一体統合プログラムが必要です</p>
-                </div>
-              )}
-              {analysis.scores.total >= 150 && analysis.scores.total < 225 && (
-                <div className="mb-4 p-4 bg-orange-50 border-l-4 border-orange-500 rounded">
-                  <p className="text-orange-800 font-semibold">📈 魂感自在道プログラムでの段階的サポートが推奨</p>
-                  <p className="text-orange-700 text-sm mt-1">年間コミュニティでの継続的な取り組みが効果的です</p>
-                </div>
-              )}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="bg-white p-4 rounded-xl">
-                  <h4 className="font-semibold text-gray-800 mb-2">🔄 即座に始められること</h4>
-                  <ul className="text-sm text-gray-600 space-y-1">
-                    <li>• 朝の3分間三位一体チェックイン</li>
-                    <li>• 身体感覚への意識的な注意</li>
-                    <li>• 感情と思考の客観視練習</li>
-                  </ul>
-                </div>
-                <div className="bg-white p-4 rounded-xl">
-                  <h4 className="font-semibold text-gray-800 mb-2">📚 深い変容のために</h4>
-                  <ul className="text-sm text-gray-600 space-y-1">
-                    <li>• 九次元統合モデルの学習</li>
-                    <li>• ソマティックワークの実践</li>
-                    <li>• コミュニティでの共同実践</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
+
 
             {/* アクションボタン */}
             <div className="text-center space-y-4">
@@ -463,15 +430,7 @@ const TrinityAssessmentComplete = () => {
               >
                 🔄 再診断する
               </button>
-              
-              <div className="text-center mt-6">
-                <p className="text-sm text-gray-600 mb-4">
-                  この診断結果をより深く理解し、実際の変容を体験したい方へ
-                </p>
-                <button className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 shadow-lg">
-                  ✨ 魂感自在道〜ジシン覚醒編〜について詳しく見る
-                </button>
-              </div>
+
             </div>
           </div>
         </div>
@@ -487,7 +446,7 @@ const TrinityAssessmentComplete = () => {
             <h1 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-2">
               魂感自在道 三位一体偽物感度チェック
             </h1>
-            <p className="text-gray-600 text-lg mb-4">【完全版75項目】</p>
+
             <p className="text-gray-500">
               各質問について、どの程度当てはまるかを0〜5で評価してください
             </p>
