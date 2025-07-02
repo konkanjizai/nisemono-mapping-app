@@ -249,7 +249,7 @@ const TrinityAssessmentComplete = () => {
           <div className="bg-white rounded-3xl shadow-xl p-8 mb-8">
             <div className="text-center mb-8">
               <h1 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-4">
-                三位一体偽物感度分析結果【完全版】
+                三位一体偽物感度分析結果
               </h1>
               <p className="text-gray-600 text-lg">
                 75項目の詳細分析に基づく包括的な診断結果
