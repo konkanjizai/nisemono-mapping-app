@@ -9,41 +9,41 @@ const TrinityAssessmentComplete = () => {
 
   // 75項目の質問データベース（サブカテゴリ付き）
   const questions = {
-    rider: [
-      // 使命・目的に関する偽物感 (0-4)
-      { text: "本当にやりたいことが分からない状態で行動している", subcategory: "mission", id: 0 },
-      { text: "周囲の期待に応えるために、自分の直感を無視している", subcategory: "mission", id: 1 },
-      { text: "成功しているはずなのに、深い充実感を感じられない", subcategory: "mission", id: 2 },
-      { text: "「これが私の人生の目的なのか？」と疑問を感じることがある", subcategory: "mission", id: 3 },
-      { text: "心の奥で「違う、これは本当の私じゃない」という声が聞こえる", subcategory: "mission", id: 4 },
+    body: [
+      // 身体感覚・エネルギーに関する偽物感 (0-4)
+      { text: "体が緊張していることが多く、リラックスできない", subcategory: "sensation", id: 0 },
+      { text: "身体の感覚や声を無視することが多い", subcategory: "sensation", id: 1 },
+      { text: "エネルギーレベルが不安定で、極端な疲労感がある", subcategory: "sensation", id: 2 },
+      { text: "身体からのサインを「気のせい」として無視している", subcategory: "sensation", id: 3 },
+      { text: "自分の身体を信頼できない感覚がある", subcategory: "sensation", id: 4 },
       
-      // 内なる声・直感に関する偽物感 (5-9)
-      { text: "重要な決断を他人の意見に頼ってしまう", subcategory: "intuition", id: 5 },
-      { text: "自分の直感を信じることができない", subcategory: "intuition", id: 6 },
-      { text: "「もっと大きな意味があるはず」という感覚を無視している", subcategory: "intuition", id: 7 },
-      { text: "スピリチュアルな体験や洞察を「気のせい」と否定してしまう", subcategory: "intuition", id: 8 },
-      { text: "内側から湧き上がるインスピレーションを表現できない", subcategory: "intuition", id: 9 },
+      // 身体ケア・セルフケアに関する偽物感 (5-9)
+      { text: "疲れているのに休むことに罪悪感を感じる", subcategory: "selfcare", id: 5 },
+      { text: "身体のメンテナンスよりも仕事や義務を優先してしまう", subcategory: "selfcare", id: 6 },
+      { text: "「我慢すること」が美徳だと思い込んでいる", subcategory: "selfcare", id: 7 },
+      { text: "身体的な不調を精神力で乗り切ろうとする", subcategory: "selfcare", id: 8 },
+      { text: "自分の身体を労わることに価値を感じられない", subcategory: "selfcare", id: 9 },
       
-      // 存在価値・自己認識に関する偽物感 (10-14)
-      { text: "「私はここにいていいのか？」という疑念を感じる", subcategory: "existence", id: 10 },
-      { text: "自分の存在そのものに価値を感じられない", subcategory: "existence", id: 11 },
-      { text: "他者と比較して自分が劣っていると感じる", subcategory: "existence", id: 12 },
-      { text: "「特別な存在でありたい」と思う一方で、それを恥じている", subcategory: "existence", id: 13 },
-      { text: "宇宙や自然とのつながりを感じられない", subcategory: "existence", id: 14 },
+      // 外見・表現に関する偽物感 (10-14)
+      { text: "見た目を取り繕うために、本来の自分らしさを隠している", subcategory: "appearance", id: 10 },
+      { text: "他者の目を意識した「演技的」な身体表現をしている", subcategory: "appearance", id: 11 },
+      { text: "自然な身体の動きや表現を抑制している", subcategory: "appearance", id: 12 },
+      { text: "身体的な魅力や美しさを認めることができない", subcategory: "appearance", id: 13 },
+      { text: "「こうあるべき」身体像に合わせて自分を無理に変えようとする", subcategory: "appearance", id: 14 },
       
-      // 表現・創造性に関する偽物感 (15-19)
-      { text: "本当の自分を表現することに恐れを感じる", subcategory: "expression", id: 15 },
-      { text: "創造的な活動に「才能がない」と制限をかけている", subcategory: "expression", id: 16 },
-      { text: "独自性や個性を出すことに罪悪感を感じる", subcategory: "expression", id: 17 },
-      { text: "「私なんかが」という思いで自己表現を控える", subcategory: "expression", id: 18 },
-      { text: "魂が求める表現と社会的役割の間で引き裂かれている", subcategory: "expression", id: 19 },
+      // 身体の不調・症状に関する偽物感 (15-19)
+      { text: "身体的な不調（頭痛、肩こり等）が慢性化している", subcategory: "symptoms", id: 15 },
+      { text: "ストレスが身体症状として現れやすい", subcategory: "symptoms", id: 16 },
+      { text: "身体の不調を「気持ちの問題」だと思いがち", subcategory: "symptoms", id: 17 },
+      { text: "薬や外的手段に頼りがちで、身体の自然治癒力を信頼していない", subcategory: "symptoms", id: 18 },
+      { text: "身体からの警告サインを見逃しがち", subcategory: "symptoms", id: 19 },
       
-      // 愛・つながりに関する偽物感 (20-24)
-      { text: "無条件の愛を受け取ることができない", subcategory: "love", id: 20 },
-      { text: "深いレベルでの理解や共感を諦めている", subcategory: "love", id: 21 },
-      { text: "「本当の私を知られたら嫌われる」と恐れている", subcategory: "love", id: 22 },
-      { text: "孤独感の中で「私だけが違う」と感じている", subcategory: "love", id: 23 },
-      { text: "魂レベルでのつながりを体験したことがない", subcategory: "love", id: 24 }
+      // エネルギー・活力に関する偽物感 (20-24)
+      { text: "朝起きた時から疲れている感覚がある", subcategory: "energy", id: 20 },
+      { text: "やる気や情熱を感じられない時期が続いている", subcategory: "energy", id: 21 },
+      { text: "身体のエネルギーを効率的に使えていない感覚がある", subcategory: "energy", id: 22 },
+      { text: "食事や睡眠でエネルギーが回復しにくい", subcategory: "energy", id: 23 },
+      { text: "自分のエネルギーレベルをコントロールできない", subcategory: "energy", id: 24 }
     ],
     
     mind: [
@@ -83,67 +83,70 @@ const TrinityAssessmentComplete = () => {
       { text: "心の中の真実と表面的な言動が一致していない", subcategory: "integration", id: 49 }
     ],
     
-    body: [
-      // 身体感覚・エネルギーに関する偽物感 (50-54)
-      { text: "体が緊張していることが多く、リラックスできない", subcategory: "sensation", id: 50 },
-      { text: "身体の感覚や声を無視することが多い", subcategory: "sensation", id: 51 },
-      { text: "エネルギーレベルが不安定で、極端な疲労感がある", subcategory: "sensation", id: 52 },
-      { text: "身体からのサインを「気のせい」として無視している", subcategory: "sensation", id: 53 },
-      { text: "自分の身体を信頼できない感覚がある", subcategory: "sensation", id: 54 },
+    rider: [
+      // 使命・目的に関する偽物感 (50-54)
+      { text: "本当にやりたいことが分からない状態で行動している", subcategory: "mission", id: 50 },
+      { text: "周囲の期待に応えるために、自分の直感を無視している", subcategory: "mission", id: 51 },
+      { text: "成功しているはずなのに、深い充実感を感じられない", subcategory: "mission", id: 52 },
+      { text: "「これが私の人生の目的なのか？」と疑問を感じることがある", subcategory: "mission", id: 53 },
+      { text: "心の奥で「違う、これは本当の私じゃない」という声が聞こえる", subcategory: "mission", id: 54 },
       
-      // 身体ケア・セルフケアに関する偽物感 (55-59)
-      { text: "疲れているのに休むことに罪悪感を感じる", subcategory: "selfcare", id: 55 },
-      { text: "身体のメンテナンスよりも仕事や義務を優先してしまう", subcategory: "selfcare", id: 56 },
-      { text: "「我慢すること」が美徳だと思い込んでいる", subcategory: "selfcare", id: 57 },
-      { text: "身体的な不調を精神力で乗り切ろうとする", subcategory: "selfcare", id: 58 },
-      { text: "自分の身体を労わることに価値を感じられない", subcategory: "selfcare", id: 59 },
+      // 内なる声・直感に関する偽物感 (55-59)
+      { text: "重要な決断を他人の意見に頼ってしまう", subcategory: "intuition", id: 55 },
+      { text: "自分の直感を信じることができない", subcategory: "intuition", id: 56 },
+      { text: "「もっと大きな意味があるはず」という感覚を無視している", subcategory: "intuition", id: 57 },
+      { text: "スピリチュアルな体験や洞察を「気のせい」と否定してしまう", subcategory: "intuition", id: 58 },
+      { text: "内側から湧き上がるインスピレーションを表現できない", subcategory: "intuition", id: 59 },
       
-      // 外見・表現に関する偽物感 (60-64)
-      { text: "見た目を取り繕うために、本来の自分らしさを隠している", subcategory: "appearance", id: 60 },
-      { text: "他者の目を意識した「演技的」な身体表現をしている", subcategory: "appearance", id: 61 },
-      { text: "自然な身体の動きや表現を抑制している", subcategory: "appearance", id: 62 },
-      { text: "身体的な魅力や美しさを認めることができない", subcategory: "appearance", id: 63 },
-      { text: "「こうあるべき」身体像に合わせて自分を無理に変えようとする", subcategory: "appearance", id: 64 },
+      // 存在価値・自己認識に関する偽物感 (60-64)
+      { text: "「私はここにいていいのか？」という疑念を感じる", subcategory: "existence", id: 60 },
+      { text: "自分の存在そのものに価値を感じられない", subcategory: "existence", id: 61 },
+      { text: "他者と比較して自分が劣っていると感じる", subcategory: "existence", id: 62 },
+      { text: "「特別な存在でありたい」と思う一方で、それを恥じている", subcategory: "existence", id: 63 },
+      { text: "宇宙や自然とのつながりを感じられない", subcategory: "existence", id: 64 },
       
-      // 身体の不調・症状に関する偽物感 (65-69)
-      { text: "身体的な不調（頭痛、肩こり、胃痛など）が慢性化している", subcategory: "symptoms", id: 65 },
-      { text: "原因不明の身体症状に悩まされている", subcategory: "symptoms", id: 66 },
-      { text: "身体の不調を「年のせい」「仕方ない」と諦めている", subcategory: "symptoms", id: 67 },
-      { text: "痛みや不調があっても「まだ大丈夫」と無理を続ける", subcategory: "symptoms", id: 68 },
-      { text: "身体のメンテナンスを先延ばしにしがちである", subcategory: "symptoms", id: 69 },
+      // 表現・創造性に関する偽物感 (65-69)
+      { text: "本当の自分を表現することに恐れを感じる", subcategory: "expression", id: 65 },
+      { text: "創造的な活動に「才能がない」と制限をかけている", subcategory: "expression", id: 66 },
+      { text: "独自性や個性を出すことに罪悪感を感じる", subcategory: "expression", id: 67 },
+      { text: "「私なんかが」という思いで自己表現を控える", subcategory: "expression", id: 68 },
+      { text: "魂が求める表現と社会的役割の間で引き裂かれている", subcategory: "expression", id: 69 },
       
-      // 身体と心の統合に関する偽物感 (70-74)
-      { text: "心の状態と身体の状態の関連性に気づけない", subcategory: "mindbody", id: 70 },
-      { text: "身体の声を聞いて生活することができない", subcategory: "mindbody", id: 71 },
-      { text: "身体を使った表現（ダンス、運動など）に抵抗がある", subcategory: "mindbody", id: 72 },
-      { text: "身体を通じた癒しや変容を信じられない", subcategory: "mindbody", id: 73 },
-      { text: "身体の知恵を活用することができない", subcategory: "mindbody", id: 74 }
+      // 愛・つながりに関する偽物感 (70-74)
+      { text: "無条件の愛を受け取ることができない", subcategory: "love", id: 70 },
+      { text: "深いレベルでの理解や共感を諦めている", subcategory: "love", id: 71 },
+      { text: "「本当の私を知られたら嫌われる」と恐れている", subcategory: "love", id: 72 },
+      { text: "孤独感の中で「私だけが違う」と感じている", subcategory: "love", id: 73 },
+      { text: "魂レベルでのつながりを体験したことがない", subcategory: "love", id: 74 }
     ]
   };
 
-  // サブカテゴリラベル
   const subcategoryLabels = {
-    mission: "使命・目的",
-    intuition: "内なる声・直感",
-    existence: "存在価値・自己認識",
-    expression: "表現・創造性",
-    love: "愛・つながり",
+    // 馬体（肉体）関連
+    sensation: "身体感覚・エネルギー認識",
+    selfcare: "身体ケア・セルフケア",
+    appearance: "外見・身体表現",
+    symptoms: "身体の不調・症状",
+    energy: "エネルギー・活力",
+    
+    // 馬の意思（精神）関連
     thinking: "思考パターン",
     emotion: "感情表現",
     relationship: "他者との関係性",
     growth: "学習・成長",
     integration: "内面と外面の一致",
-    sensation: "身体感覚・エネルギー",
-    selfcare: "身体ケア・セルフケア",
-    appearance: "外見・表現",
-    symptoms: "身体の不調・症状",
-    mindbody: "身体と心の統合"
+    
+    // 騎手（魂）関連
+    mission: "使命・目的",
+    intuition: "内なる声・直感",
+    existence: "存在価値・自己認識",
+    expression: "表現・創造性",
+    love: "愛・つながり"
   };
 
-  // 全ての質問を統合（馬体→馬の意思→騎手の順）
+  // 全質問を配列として展開
   const allQuestions = [...questions.body, ...questions.mind, ...questions.rider];
   const currentQuestion = allQuestions[currentStep];
-  const progress = ((currentStep + 1) / allQuestions.length) * 100;
 
   const handleResponseChange = (questionId, value) => {
     setResponses(prev => ({
@@ -154,7 +157,7 @@ const TrinityAssessmentComplete = () => {
 
   const nextQuestion = () => {
     if (currentStep < allQuestions.length - 1) {
-      setCurrentStep(currentStep + 1);
+      setCurrentStep(prev => prev + 1);
     } else {
       setShowResults(true);
     }
@@ -162,144 +165,80 @@ const TrinityAssessmentComplete = () => {
 
   const prevQuestion = () => {
     if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
+      setCurrentStep(prev => prev - 1);
     }
   };
 
-  // 結果分析ロジック
+  // 結果分析関数
   const analyzeResults = () => {
-    if (Object.keys(responses).length !== 75) return null;
+    if (Object.keys(responses).length < 75) return null;
 
-    // 三位一体別スコア計算
-    const riderScore = questions.rider.reduce((sum, q) => sum + (responses[q.id] || 0), 0);
-    const mindScore = questions.mind.reduce((sum, q) => sum + (responses[q.id] || 0), 0);
+    // カテゴリ別スコア計算
     const bodyScore = questions.body.reduce((sum, q) => sum + (responses[q.id] || 0), 0);
-    const totalScore = riderScore + mindScore + bodyScore;
+    const mindScore = questions.mind.reduce((sum, q) => sum + (responses[q.id] || 0), 0);
+    const riderScore = questions.rider.reduce((sum, q) => sum + (responses[q.id] || 0), 0);
+    const totalScore = bodyScore + mindScore + riderScore;
 
-    // サブカテゴリ別スコア計算
+    // サブカテゴリ別分析
     const subcategoryScores = {};
-    Object.keys(subcategoryLabels).forEach(key => {
-      const questionsInCategory = allQuestions.filter(q => q.subcategory === key);
-      subcategoryScores[key] = questionsInCategory.reduce((sum, q) => sum + (responses[q.id] || 0), 0);
+    Object.keys(subcategoryLabels).forEach(subcategory => {
+      subcategoryScores[subcategory] = allQuestions
+        .filter(q => q.subcategory === subcategory)
+        .reduce((sum, q) => sum + (responses[q.id] || 0), 0);
     });
 
     // レベル判定
-    const getLevelInfo = (score, maxScore) => {
+    const getLevel = (score, maxScore) => {
       const percentage = (score / maxScore) * 100;
-      if (percentage <= 20) return { level: "高次元統合", color: "#10B981" };
-      if (percentage <= 40) return { level: "統合進行中", color: "#3B82F6" };
-      if (percentage <= 60) return { level: "バランス模索中", color: "#F59E0B" };
-      if (percentage <= 80) return { level: "偽物感強め", color: "#EF4444" };
-      return { level: "深刻な偽物感", color: "#991B1B" };
+      if (percentage >= 80) return { level: "深刻な分断状態", color: "#DC2626", description: "緊急に統合的サポートが必要" };
+      if (percentage >= 60) return { level: "強い偽物感", color: "#EA580C", description: "包括的なアプローチが推奨" };
+      if (percentage >= 40) return { level: "中程度の偽物感", color: "#D97706", description: "段階的な統合プログラムが有効" };
+      if (percentage >= 20) return { level: "軽度の偽物感", color: "#65A30D", description: "予防的サポートが推奨" };
+      return { level: "健全な統合状態", color: "#059669", description: "良好な三位一体バランス" };
     };
 
-    const levels = {
-      total: getLevelInfo(totalScore, 375),
-      rider: getLevelInfo(riderScore, 125),
-      mind: getLevelInfo(mindScore, 125),
-      body: getLevelInfo(bodyScore, 125)
-    };
-
-    // 統合度計算（偽物感が低いほど統合度が高い）
+    // 統合度計算（健全度ベース）
     const integrationLevel = Math.max(0, 100 - (totalScore / 375) * 100);
 
     // 総合プロフィール
     const getOverallProfile = () => {
-      if (integrationLevel >= 80) return "高次元で統合された神性顕現状態";
-      if (integrationLevel >= 60) return "三位一体統合が進んだ覚醒状態";
-      if (integrationLevel >= 40) return "成長と変容の途上にある発展状態";
-      if (integrationLevel >= 20) return "偽物感と真実性が混在する模索状態";
-      return "深い偽物感に覆われた変容要請状態";
+      if (totalScore >= 300) return "深刻な三位一体分断状態";
+      if (totalScore >= 225) return "強い偽物感・統合要";
+      if (totalScore >= 150) return "中程度の偽物感・調整要";
+      if (totalScore >= 75) return "軽度の偽物感・予防要";
+      return "健全な三位一体統合状態";
     };
 
     return {
       scores: {
         total: totalScore,
-        rider: riderScore,
+        body: bodyScore,
         mind: mindScore,
-        body: bodyScore
+        rider: riderScore
+      },
+      levels: {
+        total: getLevel(totalScore, 375),
+        body: getLevel(bodyScore, 125),
+        mind: getLevel(mindScore, 125),
+        rider: getLevel(riderScore, 125)
       },
       subcategoryScores,
-      levels,
       integrationLevel,
       overallProfile: getOverallProfile()
     };
   };
 
-  const analysis = Object.keys(responses).length === 75 ? analyzeResults() : null;
+  const analysis = analyzeResults();
 
-  // チャート用データ準備 - 健全度表示（偽物感が低いほど高い値）
-  const chartData = analysis ? [
-    { name: '馬体（肉体）', score: analysis.scores.body, 健全度: Math.max(0, 125 - analysis.scores.body), maxScore: 125, color: '#10B981' },
-    { name: '馬の意思（精神）', score: analysis.scores.mind, 健全度: Math.max(0, 125 - analysis.scores.mind), maxScore: 125, color: '#EC4899' },
-    { name: '騎手（魂）', score: analysis.scores.rider, 健全度: Math.max(0, 125 - analysis.scores.rider), maxScore: 125, color: '#6366F1' }
-  ] : [];
+  // レーダーチャート用データ準備
+  const radarData = analysis ? Object.keys(subcategoryLabels).map(subcategory => ({
+    category: subcategoryLabels[subcategory],
+    健全度: Math.max(0, 25 - (analysis.subcategoryScores[subcategory] || 0)),
+    偽物感: analysis.subcategoryScores[subcategory] || 0
+  })) : [];
 
-  // **修正部分**: 三位一体統合レーダーチャート用データ（数字が少ないほど頂点に近づく）
-  const trinityRadarData = analysis ? [
-    { 
-      category: '馬体（肉体）', 
-      健全度: Math.max(0, 125 - analysis.scores.body),
-      fullMark: 125
-    },
-    { 
-      category: '馬の意思（精神）', 
-      健全度: Math.max(0, 125 - analysis.scores.mind),
-      fullMark: 125
-    },
-    { 
-      category: '騎手（魂）', 
-      健全度: Math.max(0, 125 - analysis.scores.rider),
-      fullMark: 125
-    }
-  ] : [];
-
-  // **修正部分**: サブカテゴリチャート用データも健全度表示に変更
-  const subcategoryChartData = analysis ? Object.keys(subcategoryLabels).map(key => {
-    const maxSubScore = allQuestions.filter(q => q.subcategory === key).length * 5; // 各カテゴリの最大スコア
-    return {
-      name: subcategoryLabels[key],
-      score: analysis.subcategoryScores[key],
-      健全度: Math.max(0, maxSubScore - analysis.subcategoryScores[key]),
-      category: key.includes('sensation') || key.includes('selfcare') || key.includes('appearance') || key.includes('symptoms') || key.includes('mindbody') ? 'body' :
-               key.includes('thinking') || key.includes('emotion') || key.includes('relationship') || key.includes('growth') || key.includes('integration') ? 'mind' : 'rider'
-    };
-  }) : [];
-
-  // **修正部分**: レーダーチャート用データ - 健全度での表示
-  const radarData = analysis ? Object.keys(subcategoryLabels).map(key => {
-    const questionsInCategory = allQuestions.filter(q => q.subcategory === key);
-    const maxScore = questionsInCategory.length * 5;
-    const actualScore = analysis.subcategoryScores[key];
-    const healthScore = Math.max(0, maxScore - actualScore); // 健全度 = 最大スコア - 実際のスコア
-    
-    return {
-      category: subcategoryLabels[key],
-      健全度: healthScore,
-      fullMark: maxScore
-    };
-  }) : [];
-
-  const exportResults = () => {
-    const data = {
-      timestamp: new Date().toISOString(),
-      responses,
-      analysis,
-      version: "完全版75項目"
-    };
-    
-    const dataStr = JSON.stringify(data, null, 2);
-    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-    
-    const exportFileDefaultName = `魂感自在道_偽物感診断結果_${new Date().toISOString().split('T')[0]}.json`;
-    
-    const linkElement = document.createElement('a');
-    linkElement.setAttribute('href', dataUri);
-    linkElement.setAttribute('download', exportFileDefaultName);
-    linkElement.click();
-  };
-
-  // カテゴリ名と色の決定（馬体→馬の意思→騎手の順）
+  // プログレス計算
+  const progress = (currentStep / allQuestions.length) * 100;
   const categoryName = currentStep < 25 ? '馬体（肉体）' : currentStep < 50 ? '馬の意思（精神）' : '騎手（魂）';
   const categoryColor = currentStep < 25 ? '#10B981' : currentStep < 50 ? '#EC4899' : '#6366F1';
 
@@ -369,43 +308,37 @@ const TrinityAssessmentComplete = () => {
               </div>
             </div>
 
-            {/* 修正されたレーダーチャート */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-2xl">
-                <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">🔥 三位一体統合バランス</h3>
-                <p className="text-sm text-gray-600 mb-4 text-center">※外側ほど健全・統合された状態</p>
-                <ResponsiveContainer width="100%" height={300}>
-                  <RadarChart data={trinityRadarData}>
-                    <PolarGrid />
-                    <PolarAngleAxis dataKey="category" tick={{ fontSize: 12, fontWeight: 'bold' }} />
-                    <PolarRadiusAxis 
-                      angle={90} 
-                      domain={[0, 125]} 
-                      tick={{ fontSize: 10 }}
-                      axisLine={false}
-                    />
-                    <Radar
-                      name="健全度"
-                      dataKey="健全度"
-                      stroke="#8B5CF6"
-                      fill="#8B5CF6"
-                      fillOpacity={0.3}
-                      strokeWidth={3}
-                    />
-                  </RadarChart>
-                </ResponsiveContainer>
-              </div>
-
-              <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-2xl">
-                <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">📈 健全度比較</h3>
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={chartData}>
+            {/* カテゴリ別バーチャート */}
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-2xl mb-8">
+              <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">🎯 三位一体バランス分析</h3>
+              <div style={{ width: '100%', height: '300px' }}>
+                <ResponsiveContainer>
+                  <BarChart data={[
+                    { 
+                      name: '馬体（肉体）', 
+                      score: analysis.scores.body, 
+                      健全度: Math.max(0, 125 - analysis.scores.body),
+                      fullMark: 125 
+                    },
+                    { 
+                      name: '馬の意思（精神）', 
+                      score: analysis.scores.mind, 
+                      健全度: Math.max(0, 125 - analysis.scores.mind),
+                      fullMark: 125 
+                    },
+                    { 
+                      name: '騎手（魂）', 
+                      score: analysis.scores.rider, 
+                      健全度: Math.max(0, 125 - analysis.scores.rider),
+                      fullMark: 125 
+                    }
+                  ]}>
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                    <YAxis />
+                    <XAxis dataKey="name" />
+                    <YAxis domain={[0, 125]} />
                     <Tooltip 
                       formatter={(value, name) => [
-                        name === '健全度' ? `${value}/125` : `${value}/125`,
+                        name === 'score' ? `${value}/125` : `${value}/125`,
                         name === '健全度' ? '健全度' : '偽物感スコア'
                       ]}
                     />
@@ -449,11 +382,9 @@ const TrinityAssessmentComplete = () => {
 
             {/* レベル別診断結果 */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <div className="p-6 rounded-2xl" style={{ backgroundColor: analysis.levels.body.color + '20' }}>
-                <h4 className="font-bold text-lg mb-2" style={{ color: analysis.levels.body.color }}>
-                  💪 馬体（肉体）レベル
-                </h4>
-                <p className="font-semibold mb-2" style={{ color: analysis.levels.body.color }}>
+              <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-2xl border-l-4 border-green-500">
+                <h4 className="text-lg font-bold text-gray-800 mb-2">🐎 馬体（肉体）</h4>
+                <p className="text-2xl font-bold mb-2" style={{ color: analysis.levels.body.color }}>
                   {analysis.levels.body.level}
                 </p>
                 <p className="text-sm text-gray-600">
@@ -462,11 +393,9 @@ const TrinityAssessmentComplete = () => {
                 </p>
               </div>
               
-              <div className="p-6 rounded-2xl" style={{ backgroundColor: analysis.levels.mind.color + '20' }}>
-                <h4 className="font-bold text-lg mb-2" style={{ color: analysis.levels.mind.color }}>
-                  🧠 馬の意思（精神）レベル
-                </h4>
-                <p className="font-semibold mb-2" style={{ color: analysis.levels.mind.color }}>
+              <div className="bg-gradient-to-br from-pink-50 to-rose-50 p-6 rounded-2xl border-l-4 border-pink-500">
+                <h4 className="text-lg font-bold text-gray-800 mb-2">🧠 馬の意思（精神）</h4>
+                <p className="text-2xl font-bold mb-2" style={{ color: analysis.levels.mind.color }}>
                   {analysis.levels.mind.level}
                 </p>
                 <p className="text-sm text-gray-600">
@@ -475,17 +404,50 @@ const TrinityAssessmentComplete = () => {
                 </p>
               </div>
               
-              <div className="p-6 rounded-2xl" style={{ backgroundColor: analysis.levels.rider.color + '20' }}>
-                <h4 className="font-bold text-lg mb-2" style={{ color: analysis.levels.rider.color }}>
-                  🧘‍♀️ 騎手（魂）レベル
-                </h4>
-                <p className="font-semibold mb-2" style={{ color: analysis.levels.rider.color }}>
+              <div className="bg-gradient-to-br from-indigo-50 to-purple-50 p-6 rounded-2xl border-l-4 border-indigo-500">
+                <h4 className="text-lg font-bold text-gray-800 mb-2">👤 騎手（魂）</h4>
+                <p className="text-2xl font-bold mb-2" style={{ color: analysis.levels.rider.color }}>
                   {analysis.levels.rider.level}
                 </p>
                 <p className="text-sm text-gray-600">
                   スコア: {analysis.scores.rider}/125点<br/>
                   健全度: {125 - analysis.scores.rider}/125点
                 </p>
+              </div>
+            </div>
+
+            {/* 推奨アクション */}
+            <div className="bg-gradient-to-r from-indigo-100 to-purple-100 p-6 rounded-2xl mb-8">
+              <h3 className="text-xl font-bold text-gray-800 mb-4">🎯 推奨される次のステップ</h3>
+              {analysis.scores.total >= 225 && (
+                <div className="mb-4 p-4 bg-red-50 border-l-4 border-red-500 rounded">
+                  <p className="text-red-800 font-semibold">⚠️ 魂感自在道〜ジシン覚醒編〜での集中的サポートを強く推奨</p>
+                  <p className="text-red-700 text-sm mt-1">包括的な三位一体統合プログラムが必要です</p>
+                </div>
+              )}
+              {analysis.scores.total >= 150 && analysis.scores.total < 225 && (
+                <div className="mb-4 p-4 bg-orange-50 border-l-4 border-orange-500 rounded">
+                  <p className="text-orange-800 font-semibold">📈 魂感自在道プログラムでの段階的サポートが推奨</p>
+                  <p className="text-orange-700 text-sm mt-1">年間コミュニティでの継続的な取り組みが効果的です</p>
+                </div>
+              )}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-white p-4 rounded-xl">
+                  <h4 className="font-semibold text-gray-800 mb-2">🔄 即座に始められること</h4>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>• 朝の3分間三位一体チェックイン</li>
+                    <li>• 身体感覚への意識的な注意</li>
+                    <li>• 感情と思考の客観視練習</li>
+                  </ul>
+                </div>
+                <div className="bg-white p-4 rounded-xl">
+                  <h4 className="font-semibold text-gray-800 mb-2">📚 深い変容のために</h4>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>• 九次元統合モデルの学習</li>
+                    <li>• ソマティックワークの実践</li>
+                    <li>• コミュニティでの共同実践</li>
+                  </ul>
+                </div>
               </div>
             </div>
 
@@ -501,6 +463,15 @@ const TrinityAssessmentComplete = () => {
               >
                 🔄 再診断する
               </button>
+              
+              <div className="text-center mt-6">
+                <p className="text-sm text-gray-600 mb-4">
+                  この診断結果をより深く理解し、実際の変容を体験したい方へ
+                </p>
+                <button className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 shadow-lg">
+                  ✨ 魂感自在道〜ジシン覚醒編〜について詳しく見る
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -632,4 +603,9 @@ const TrinityAssessmentComplete = () => {
   );
 };
 
-export default TrinityAssessmentComplete;
+// App.jsxのメインコンポーネント
+function App() {
+  return <TrinityAssessmentComplete />;
+}
+
+export default App;
